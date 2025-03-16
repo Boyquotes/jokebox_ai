@@ -7,3 +7,18 @@ Joke generator together.
 5. [ ] Experiment with prompts to optimize the AI for subjective tasks like humor.
 6. [ ] Frontend development.
 7. [ ] Debugging and submission.
+
+
+```
+git clone https://github.com/Boyquotes/jokebox_ai/
+```
+
+```
+cd jokebox-ai/
+npm install
+```
+
+```
+npm run dev
+```
+
