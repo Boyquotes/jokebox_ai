@@ -8,6 +8,9 @@ Joke generator together.
 6. [ ] Frontend development.
 7. [ ] Debugging and submission.
 
+----
+
+Installation
 
 ```
 git clone https://github.com/Boyquotes/jokebox_ai/
