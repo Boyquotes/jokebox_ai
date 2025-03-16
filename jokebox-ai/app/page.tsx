@@ -6,7 +6,57 @@ export default function JokeGenerator() {
   const [topic, setTopic] = useState("random");
   const [tone, setTone] = useState("silly");
   const [type, setType] = useState("pun");
+  const [language, setLanguage] = useState("english");
   const [temperature, setTemperature] = useState(0.7);
+  const [joke, setJoke] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [jokeCount, setJokeCount] = useState(0); // Counter to track joke generation attempts
+
+  const handleGenerateJoke = async () => {
+    setLoading(true);
+    setJoke("");
+    setJokeCount(prevCount => prevCount + 1); // Increment counter each time
+    
+    try {
+      const response = await fetch('/api/joke', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        },
+        body: JSON.stringify({
+          messages: [
+            {
+              role: 'user',
+              content: JSON.stringify({
+                topic,
+                tone,
+                type,
+                language,
+                temperature,
+                timestamp: new Date().getTime(), // Add timestamp for uniqueness
+                requestId: `${Math.random().toString(36).substring(2, 9)}-${jokeCount}` // Add unique ID
+              })
+            }
+          ]
+        }),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to generate joke');
+      }
+      
+      const data = await response.json();
+      setJoke(data.joke);
+    } catch (error) {
+      console.error('Error generating joke:', error);
+      setJoke("Sorry, couldn't generate a joke. Please try again!");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white p-4">
@@ -55,6 +105,19 @@ export default function JokeGenerator() {
           <option value="story">Story</option>
         </select>
 
+        {/* Language Selection */}
+        <label className="block text-sm mt-4 mb-2">Choose Language:</label>
+        <select
+          className="w-full p-2 rounded bg-gray-700 text-white"
+          value={language}
+          onChange={(e) => setLanguage(e.target.value)}
+        >
+          <option value="english">English</option>
+          <option value="french">French</option>
+          <option value="spanish">Spanish</option>
+          <option value="german">German</option>
+        </select>
+
         {/* Temperature Slider */}
         <label className="block text-sm mt-4 mb-2">Creativity Level:</label>
         <input
@@ -69,9 +132,20 @@ export default function JokeGenerator() {
         <p className="text-sm text-gray-400">Current: {temperature}</p>
 
         {/* Generate Joke Button */}
-        <button className="w-full mt-4 bg-blue-500 text-white py-2 rounded hover:bg-blue-600">
-          Generate Joke
+        <button 
+          className="w-full mt-4 bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+          onClick={handleGenerateJoke}
+          disabled={loading}
+        >
+          {loading ? 'Generating...' : 'Generate Joke'}
         </button>
+        
+        {/* Display Joke */}
+        {joke && (
+          <div className="mt-6 p-4 bg-gray-700 rounded-lg">
+            <p className="text-white">{joke}</p>
+          </div>
+        )}
       </div>
     </div>
   );
