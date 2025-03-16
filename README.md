@@ -19,6 +19,11 @@ npm install
 ```
 
 ```
+cp env.sample .env
+```
+add your API to .env file
+
+```
 npm run dev
 ```
 
