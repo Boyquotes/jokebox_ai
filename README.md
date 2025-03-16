@@ -24,7 +24,7 @@ npm install
 ```
 cp env.sample .env
 ```
-add your API to .env file
+add your API key to .env file
 
 ```
 npm run dev
