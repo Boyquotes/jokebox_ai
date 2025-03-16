@@ -1,0 +1,34 @@
+master@fransiscu:~/repos/jokebox_ai/jokebox-ai$ npm run dev
+
+> jokebox-ai@0.1.0 dev
+> next dev
+
+   ▲ Next.js 15.2.2
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.1.132:3000
+
+ ✓ Starting...
+ ✓ Ready in 2.3s
+ ○ Compiling / ...
+ ✓ Compiled / in 7s (755 modules)
+ GET / 200 in 7443ms
+ ○ Compiling /favicon.ico ...
+ ✓ Compiled /favicon.ico in 1285ms (433 modules)
+ GET /favicon.ico 200 in 1630ms
+ ○ Compiling /api/joke ...
+ ✓ Compiled /api/joke in 1273ms (880 modules)
+ GET / 200 in 112ms
+ POST /api/joke 200 in 7672ms
+ POST /api/joke 200 in 2346ms
+ POST /api/joke 200 in 4314ms
+ POST /api/joke 200 in 2721ms
+ POST /api/joke 200 in 5285ms
+ POST /api/joke 200 in 5014ms
+ POST /api/joke 200 in 3749ms
+ POST /api/joke 200 in 1546ms
+ POST /api/joke 200 in 1227ms
+ POST /api/joke 200 in 3210ms
+ POST /api/joke 200 in 4183ms
+ POST /api/joke 200 in 4234ms
+^C
+
