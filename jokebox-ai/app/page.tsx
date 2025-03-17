@@ -2,6 +2,14 @@
 
 import { useState } from "react";
 
+// Add type definition for evaluation
+interface JokeEvaluation {
+  funny: boolean;
+  appropriate: boolean;
+  offensive: boolean;
+  comments?: string;
+}
+
 export default function JokeGenerator() {
   const [topic, setTopic] = useState("random");
   const [tone, setTone] = useState("silly");
@@ -11,10 +19,38 @@ export default function JokeGenerator() {
   const [joke, setJoke] = useState("");
   const [loading, setLoading] = useState(false);
   const [jokeCount, setJokeCount] = useState(0); // Counter to track joke generation attempts
+  const [evaluation, setEvaluation] = useState<JokeEvaluation | null>(null);
+  const [evaluating, setEvaluating] = useState(false);
+
+  const handleEvaluateJoke = async () => {
+    if (!joke) return;
+    setEvaluating(true);
+    try {
+      const response = await fetch('/api/evaluate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ joke }),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to evaluate joke');
+      }
+      
+      const data = await response.json();
+      setEvaluation(data.evaluation);
+    } catch (error) {
+      console.error('Error evaluating joke:', error);
+    } finally {
+      setEvaluating(false);
+    }
+  };
 
   const handleGenerateJoke = async () => {
     setLoading(true);
     setJoke("");
+    setEvaluation(null);
     setJokeCount(prevCount => prevCount + 1); // Increment counter each time
     
     try {
@@ -142,8 +178,34 @@ export default function JokeGenerator() {
         
         {/* Display Joke */}
         {joke && (
-          <div className="mt-6 p-4 bg-gray-700 rounded-lg">
-            <p className="text-white">{joke}</p>
+          <div className="mt-6">
+            <div className="p-4 bg-gray-700 rounded-lg">
+              <p className="text-white">{joke}</p>
+            </div>
+            
+            <button 
+              className="w-full mt-4 bg-green-500 text-white py-2 rounded hover:bg-green-600"
+              onClick={handleEvaluateJoke}
+              disabled={evaluating || !joke}
+            >
+              {evaluating ? 'Evaluating...' : 'Evaluate Joke'}
+            </button>
+
+            {evaluation && (
+              <div className="mt-4 p-4 bg-gray-700 rounded-lg">
+                <h3 className="font-bold mb-2">Joke Evaluation:</h3>
+                <ul className="space-y-2">
+                  <li>Funny: {evaluation.funny ? '✅' : '❌'}</li>
+                  <li>Appropriate: {evaluation.appropriate ? '✅' : '❌'}</li>
+                  <li>Offensive: {evaluation.offensive ? '⚠️' : '✅'}</li>
+                  {evaluation.comments && (
+                    <li className="mt-2 text-sm text-gray-400">
+                      Comments: {evaluation.comments}
+                    </li>
+                  )}
+                </ul>
+              </div>
+            )}
           </div>
         )}
       </div>
